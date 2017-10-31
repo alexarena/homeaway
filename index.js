@@ -19,6 +19,29 @@ function buildQueryString(params){
   return qs
 }
 
+function getIDFromURL(url){
+
+  if(url.substr(0,5) !== 'https'){
+    return url // URL is already an ID
+  }
+
+  const beginPoint = url.indexOf('/p')+2
+  url = url.substr(beginPoint)
+
+  let finalID = ''
+  for(let singleChar of url){
+    if(!Number.isNaN(+singleChar)){
+      finalID += singleChar
+    }
+    else{
+      break
+    }
+  }
+
+  return finalID
+
+}
+
 async function request(method,path,params){
 
   if(!this.access_token){
@@ -29,8 +52,9 @@ async function request(method,path,params){
     const res = await superagent(method, API_URL+path)
       .set('authorization', `Bearer ${this.access_token}`)
       .set('cache-control','no-cache')
+      .set('X-HomeAway-DisplayLocale','en_US')
       .query(params)
-      
+
     return res.body
   }
   catch(e){
@@ -77,6 +101,8 @@ module.exports = class HomeAway{
     // We use a funky method for setting query strings here,
     // since the HA API allows multiple "q" values to be set.
     // JS objects can't share the same key, thus we use an array of objects
+
+    id = getIDFromURL(id)
 
     let params = []
     params.push({id:id})
