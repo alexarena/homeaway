@@ -33,6 +33,9 @@ function getIDFromURL(url){
     if(!Number.isNaN(+singleChar)){
       finalID += singleChar
     }
+    else if(singleChar === 'v'){ // Handle VRBO listings
+      finalID = 'v' + finalID
+    }
     else{
       break
     }
@@ -94,6 +97,19 @@ module.exports = class HomeAway{
 
   setToken(token){
     this.access_token = token
+  }
+
+  async quickSearch(q,pageSize){
+
+    const params = [
+      {q:q},
+      {pageSize:pageSize}
+    ]
+
+    const qs = buildQueryString(params)
+
+    const tmp = await request('GET','public/search'+qs)
+    return tmp
   }
 
   async getListing(id,attributes){
