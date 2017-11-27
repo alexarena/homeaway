@@ -1,15 +1,20 @@
 {
   "name": "homeaway",
-  "engines" : { "node" : ">=8.0.0" },
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "version": "0.1.2",
   "description": "An unofficial client for the HomeAway API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Alex Arena",
   "license": "MIT",
   "dependencies": {
     "superagent": "^3.8.0"
+  },
+  "devDependencies": {
+    "jest": "^21.2.1"
   }
 }

@@ -1,6 +1,7 @@
 'use strict'
 
 const superagent = require('superagent')
+const {URL} = require('url')
 
 const API_URL = 'https://ws.homeaway.com/'
 
@@ -48,7 +49,7 @@ function getIDFromURL(url){
 async function request(method,path,params){
 
   if(!this.access_token){
-    throw new Error('You must have an API token to make API requests. See README.md for help.')
+    throw new Error('You must call connect() before making requests. See README.md for help.')
   }
 
   try{
@@ -76,13 +77,13 @@ module.exports = class HomeAway{
 
   constructor(c){
 
-    if(c && c.access_token){
-      this.access_token = c.access_token
-    }
+    this.access_token = null
 
     if(c && c.client && c.secret){
       this.client = c.client
       this.secret = c.secret
+    }else{
+      throw new Error('The configuration object must include both a client and secret property.')
     }
 
     request = request.bind(this)
@@ -131,6 +132,36 @@ module.exports = class HomeAway{
 
     const tmp = await request('GET','public/listing'+qs)
     return tmp
+
+  }
+
+  async getUserToken(url){
+    try{
+      const code = new URL(url).searchParams.get('code')
+      const tmp = await superagent('POST', API_URL + 'oauth/token')
+        .auth(this.client,this.secret)
+        .send(`code=${code}`)
+      return tmp.body
+    }
+    catch(e){
+      if(e.status === 401){
+        throw new Error('Unauthorized')
+      }
+      throw new Error('Unknown error, could not get user token.')
+    }
+  }
+
+  async authenticate(url){
+    try{
+      const tmp = await this.getUserToken(url)
+      delete tmp.token_type
+      delete tmp.refresh_token
+      delete tmp.expires_in
+      return tmp
+    }
+    catch(e){
+      return false
+    }
 
   }
 }
