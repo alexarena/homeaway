@@ -158,7 +158,6 @@ module.exports = class HomeAway{
       const tmp = await this.getUserToken(code)
       delete tmp.token_type
       delete tmp.refresh_token
-      delete tmp.expires_in
       return tmp
     }
     catch(e){
