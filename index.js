@@ -135,7 +135,7 @@ module.exports = class HomeAway{
 
   async getUserToken(code){
 
-    if(!url){
+    if(!code){
       throw new Error('A code must be provided. ')
     }
 
