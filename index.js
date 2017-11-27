@@ -131,9 +131,15 @@ module.exports = class HomeAway{
 
   }
 
-  async getUserToken(url){
+  getCodeFromURL(url){ return new URL(url).searchParams.get('code') }
+
+  async getUserToken(code){
+
+    if(!url){
+      throw new Error('A code must be provided. ')
+    }
+
     try{
-      const code = new URL(url).searchParams.get('code')
       const tmp = await superagent('POST', API_URL + 'oauth/token')
         .auth(this.client,this.secret)
         .send(`code=${code}`)
@@ -147,9 +153,9 @@ module.exports = class HomeAway{
     }
   }
 
-  async authenticate(url){
+  async authenticate(code){
     try{
-      const tmp = await this.getUserToken(url)
+      const tmp = await this.getUserToken(code)
       delete tmp.token_type
       delete tmp.refresh_token
       delete tmp.expires_in
