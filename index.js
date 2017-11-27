@@ -96,10 +96,6 @@ module.exports = class HomeAway{
     return true
   }
 
-  setToken(token){
-    this.access_token = token
-  }
-
   async quickSearch(q,pageSize){
 
     const params = [
