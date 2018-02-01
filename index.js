@@ -161,7 +161,7 @@ module.exports = class HomeAway{
       return tmp
     }
     catch(e){
-      return false
+      throw e
     }
 
   }
