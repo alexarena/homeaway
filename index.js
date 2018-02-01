@@ -149,7 +149,7 @@ module.exports = class HomeAway{
       if(e.status === 401){
         throw new Error('Unauthorized')
       }
-      throw new Error('Unknown error, could not get user token.')
+      throw e
     }
   }
 
