@@ -131,6 +131,11 @@ module.exports = class HomeAway{
 
   }
 
+  async me(){
+    const me = await request('GET','https://ws.homeaway.com/public/me')
+    return me
+  }
+
   getCodeFromURL(url){ return new URL(url).searchParams.get('code') }
 
   async getUserToken(code){
@@ -156,8 +161,18 @@ module.exports = class HomeAway{
   async authenticate(code){
     try{
       const tmp = await this.getUserToken(code)
+
+      const profile = await superagent('GET', 'https://ws.homeaway.com/public/me')
+        .set('authorization', `Bearer ${tmp.access_token}`)
+        .set('cache-control','no-cache')
+        .set('X-HomeAway-DisplayLocale','en_US')
+
+      tmp.firstName = profile.body.firstName
+      tmp.lastName = profile.body.lastName
+
       delete tmp.token_type
       delete tmp.refresh_token
+
       return tmp
     }
     catch(e){
