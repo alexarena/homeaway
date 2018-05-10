@@ -131,6 +131,32 @@ module.exports = class HomeAway{
 
   }
 
+  // arrival & departure dates must be in 'yyyy-MM-dd' format
+  async getQuote(listingId,unitId,arrivalDate,departureDate,adultsCount,additionalParams){
+
+    listingId = getIDFromURL(listingId)
+
+    // these args are required
+    let params = []
+    params.push({listingId})
+    params.push({unitId})
+    params.push({arrivalDate})
+    params.push({departureDate})
+    params.push({adultsCount})
+
+    if (additionalParams) {
+      for(let paramKey of additionalParams){
+        params.push({paramKey: additionalParams[paramKey]})
+      }
+    }
+
+    const qs = buildQueryString(params)
+
+    const resp = await request('GET','public/quote'+qs)
+    return resp
+  }
+
+
   async me(){
     const me = await request('GET','https://ws.homeaway.com/public/me')
     return me
