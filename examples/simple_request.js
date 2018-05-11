@@ -14,8 +14,11 @@ async function myFunc(){
     // connect() and all other methods on ha could throw.
     // You should catch these errors somewhere within your app.
     await ha.connect()
-    const listing = await ha.getListing('6592159',['LOCATION','RATES'])
+    const listing = await ha.getListing('1644423',['LOCATION','RATES'])
     console.log(listing)
+
+    const quote = await ha.getQuote('1644423','3216409', '2018-08-10', '2018-08-12','2')
+    console.log(quote)
   }
   catch(e){
     console.log(e)
